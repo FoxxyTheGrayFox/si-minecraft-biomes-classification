@@ -1,0 +1,18 @@
+Data ewaluacji: 2026-06-02 18:54
+Model: models/best_phase2.pth
+Dokładność ogólna: 0.8254
+
+                precision    recall  f1-score   support
+
+ basalt_detlas      1.000     0.909     0.952        11
+  cherry_grove      0.909     1.000     0.952        10
+crimson_forest      1.000     0.938     0.968        16
+ end_highlands      0.125     1.000     0.222         1
+        forest      0.500     1.000     0.667         1
+    lush_caves      0.833     1.000     0.909        10
+         ocean      0.000     0.000     0.000         1
+       the_end      1.000     0.385     0.556        13
+
+      accuracy                          0.825        63
+     macro avg      0.671     0.779     0.653        63
+  weighted avg      0.921     0.825     0.836        63
