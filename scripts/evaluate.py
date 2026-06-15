@@ -14,16 +14,11 @@ from datetime import datetime
 from collections import defaultdict
 from collections import Counter
 
-
-print(
-    os.environ.get("HSA_OVERRIDE_GFX_VERSION")
-)
-print(torch.cuda.is_available())
 if torch.cuda.is_available():
     print(torch.cuda.get_device_name())
-    print(torch.version.hip)
 else:
     print("GPU not available")
+
 PROJ_DIR = str(Path(__file__).parents[1]) + "/"
 print("project dir:" + PROJ_DIR)
 DATA_DIR = PROJ_DIR + "dataset/"
@@ -45,18 +40,14 @@ test_transforms = transforms.Compose(
     ]
 )
 
-test_dataset = datasets.ImageFolder(
-    DATA_DIR + "obrazki_z_neta", transform=test_transforms
-)
+test_dataset = datasets.ImageFolder(DATA_DIR + "val", transform=test_transforms)
 test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False, num_workers=2)
 
 CLASS_NAMES = test_dataset.classes
 
 model = efficientnet_b0(weights=None)
 model.classifier[1] = nn.Linear(1280, NUM_CLASSES)
-model.load_state_dict(
-    torch.load(SAVE_DIR + "best_phase2.pth", map_location=DEVICE)
-)
+model.load_state_dict(torch.load(SAVE_DIR + "best_phase2.pth", map_location=DEVICE))
 model = model.to(DEVICE)
 model.eval()
 
