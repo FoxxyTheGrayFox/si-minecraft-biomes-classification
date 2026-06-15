@@ -11,15 +11,11 @@ import os
 from pathlib import Path
 import argparse
 
-print(
-    os.environ.get("HSA_OVERRIDE_GFX_VERSION")
-)
-print(torch.cuda.is_available())
 if torch.cuda.is_available():
     print(torch.cuda.get_device_name())
-    print(torch.version.hip)
 else:
     print("GPU not available")
+
 PROJ_DIR = str(Path(__file__).parents[1]) + "/"
 print("project dir:" + PROJ_DIR)
 DATA_DIR = PROJ_DIR + "dataset/"
@@ -61,6 +57,7 @@ def load_model(model_path=DATA_DIR + "best_phase2.pth"):
     model.eval()
     return model
 
+
 def predict(image_path, model, top_k=3):
     """Top_k przewidywań z pewnością %."""
     image = Image.open(image_path).convert("RGB")
@@ -80,6 +77,7 @@ def predict(image_path, model, top_k=3):
     ]
     return results
 
+
 # OUTPUT
 BIOME_EMOJI = {
     "cherry_grove": "🌸",
@@ -91,6 +89,7 @@ BIOME_EMOJI = {
     "the_end": "🌕",
     "end_highlands": "🌓",
 }
+
 
 def print_results(results, image_path):
     print(f"\nObraz: {image_path}")
@@ -124,20 +123,17 @@ def predict_folder(folder_path, model, extensions=(".jpg", ".png", ".jpeg")):
     all_results = {}
 
     for img_path in sorted(images):
-        results = predict(
-            img_path, model
-        )
+        results = predict(img_path, model)
         print_results(results, img_path.name)
         all_results[img_path.name] = results
 
-    output_path = (
-        SAVE_DIR + "/results.json"
-    )
+    output_path = SAVE_DIR + "/results.json"
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(all_results, f, ensure_ascii=False, indent=2)
 
     print(f"\nWyniki zapisane do {output_path}")
     return all_results
+
 
 # CLI OUTPUT
 if __name__ == "__main__":
