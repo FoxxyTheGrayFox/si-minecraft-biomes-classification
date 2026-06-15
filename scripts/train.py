@@ -7,15 +7,11 @@ from torchvision.models import efficientnet_b0, EfficientNet_B0_Weights
 from torchvision import datasets, transforms
 from pathlib import Path
 
-print(
-    os.environ.get("HSA_OVERRIDE_GFX_VERSION")
-)
-print(torch.cuda.is_available())
 if torch.cuda.is_available():
     print(torch.cuda.get_device_name())
-    print(torch.version.hip)
 else:
     print("GPU not available")
+
 PROJ_DIR = str(Path(__file__).parents[1]) + "/"
 print("project dir:" + PROJ_DIR)
 DATA_DIR = PROJ_DIR + "dataset/"
@@ -71,6 +67,7 @@ test_loader = DataLoader(
 # MODEL EFFICIENTNET-B0
 NUM_CLASSES = 8
 
+
 def build_model(num_classes=NUM_CLASSES, freeze_backbone=True):
     model = efficientnet_b0(weights=EfficientNet_B0_Weights.IMAGENET1K_V1)
 
@@ -82,6 +79,7 @@ def build_model(num_classes=NUM_CLASSES, freeze_backbone=True):
     model.classifier[1] = nn.Linear(in_features, num_classes)
 
     return model
+
 
 model = build_model(freeze_backbone=True)
 
@@ -106,6 +104,7 @@ scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
     optimizer, mode="min", patience=3, factor=0.5
 )
 
+
 # TRAIN AND EVALUATE
 def train_one_epoch(model, loader, criterion, optimizer, device):
     model.train()
@@ -127,6 +126,7 @@ def train_one_epoch(model, loader, criterion, optimizer, device):
 
     return running_loss / total, correct / total
 
+
 def evaluate(model, loader, criterion, device):
     model.eval()
     running_loss, correct, total = 0.0, 0, 0
@@ -143,6 +143,7 @@ def evaluate(model, loader, criterion, device):
             total += labels.size(0)
 
         return running_loss / total, correct / total
+
 
 # BEST MODEL
 def run_training(
@@ -187,6 +188,7 @@ def run_training(
         )
     return history
 
+
 os.makedirs("models", exist_ok=True)
 
 print("Trenowanie głowicy")
@@ -223,6 +225,7 @@ history_phase2 = run_training(
     epochs=20,
     save_path=SAVE_DIR + "best_phase2.pth",  # zmieniłem
 )
+
 
 def plot_history(h1, h2):
     train_loss = h1["train_loss"] + h2["train_loss"]
